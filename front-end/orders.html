@@ -517,7 +517,7 @@
         // 加载订单列表
         function loadOrders() {
             const user_id = sessionStorage.getItem('user_id') || '';
-            fetch(`http://localhost:8001/api/orders${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+            fetch(`https://my-project-service-2026-2.onrender.com/api/orders${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -612,7 +612,7 @@
             const loadingToast = showToast('取消中...', 'loading', 0);
             
             // 调用取消订单的API
-            fetch(`http://localhost:8001/api/order/${currentOrderId}`, {
+            fetch(`https://my-project-service-2026-2.onrender.com/api/order/${currentOrderId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

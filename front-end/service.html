@@ -965,7 +965,7 @@
             
             // 发送请求
             const user_id = sessionStorage.getItem('user_id') || '';
-            fetch('http://localhost:8001/api/order', {
+            fetch('https://my-project-service-2026-2.onrender.com/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -998,7 +998,7 @@
         // 加载地址列表
         function loadAddresses() {
             const user_id = sessionStorage.getItem('user_id') || '';
-            fetch(`http://localhost:8001/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+            fetch(`https://my-project-service-2026-2.onrender.com/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

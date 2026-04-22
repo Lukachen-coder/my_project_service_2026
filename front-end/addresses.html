@@ -521,7 +521,7 @@
         // 加载地址列表
         function loadAddresses() {
             const user_id = sessionStorage.getItem('user_id') || '';
-            fetch(`http://localhost:8001/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+            fetch(`https://my-project-service-2026-2.onrender.com/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -634,7 +634,7 @@
             if (confirm('确定要删除这个地址吗？')) {
                 const loadingToast = showToast('删除中...', 'loading', 0);
                 
-                fetch(`http://localhost:8001/api/address/${addressId}`, {
+                fetch(`https://my-project-service-2026-2.onrender.com/api/address/${addressId}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
@@ -680,7 +680,7 @@
                 formData.id = currentEditAddressId;
             }
             
-            fetch('http://localhost:8001/api/addresses', {
+            fetch('https://my-project-service-2026-2.onrender.com/api/addresses', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
