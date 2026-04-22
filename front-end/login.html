@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>上门服务系统 - 登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333333;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .register-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            padding: 20px 32px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+        
+        .toast.info {
+            background-color: #2196F3;
+        }
+        
+        .toast.loading {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>上门服务系统</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">登录</button>
+        </form>
+        <div class="register-link">
+            没有账号？<a href="register.html">立即注册</a>
+        </div>
+    </div>
+    
+    <!-- 弹窗式提示容器 -->
+    <div id="toastContainer"></div>
+    
+    <script>
+        // 全局变量：当前显示的弹窗
+        let currentToast = null;
+
+        // 弹窗式提示函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // 先移除之前的弹窗
+            if (currentToast && toastContainer.contains(currentToast)) {
+                toastContainer.removeChild(currentToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            currentToast = toast;
+
+            toastContainer.appendChild(toast);
+
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // 只有非 loading 类型才会自动消失
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toastContainer.contains(toast)) {
+                            toastContainer.removeChild(toast);
+                            if (currentToast === toast) {
+                                currentToast = null;
+                            }
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        // 移除弹窗
+        function removeToast(toast) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toast && toastContainer.contains(toast)) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                        if (currentToast === toast) {
+                            currentToast = null;
+                        }
+                    }
+                }, 300);
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM 加载完成');
+            
+            // 获取登录表单
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                console.log('找到登录表单');
+                
+                // 添加表单提交事件
+                loginForm.addEventListener('submit', function(e) {
+                    console.log('表单提交事件触发');
+                    e.preventDefault();
+
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    const submitButton = this.querySelector('button');
+
+                    // 表单验证
+                    if (!username || !password) {
+                        console.log('表单验证失败：请输入用户名和密码');
+                        showToast('请输入用户名和密码', 'error');
+                        return;
+                    }
+
+                    console.log('表单验证通过，准备发送请求');
+
+                    // 禁用按钮并显示加载状态
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.textContent = '登录中...';
+                    submitButton.disabled = true;
+                    submitButton.style.opacity = '0.7';
+
+                    // 显示加载弹窗
+                    const loadingToast = showToast('登录中...', 'loading', 0);
+
+                    // 使用 fetch API 发送请求
+                    fetch('http://localhost:8001/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 移除加载弹窗
+                        removeToast(loadingToast);
+                        
+                        console.log('登录响应:', data);
+                        
+                        if (data.success) {
+                            sessionStorage.setItem('user_id', username);
+                            sessionStorage.setItem('username', username);
+                            showToast('登录成功', 'success', 1500);
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1500);
+                        } else {
+                            showToast(data.message, 'error');
+                        }
+                        
+                        // 恢复按钮状态
+                        submitButton.textContent = originalButtonText;
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // 移除加载弹窗
+                        removeToast(loadingToast);
+                        // 显示错误提示
+                        showToast('登录失败，请检查网络连接', 'error');
+                        // 恢复按钮状态
+                        submitButton.textContent = originalButtonText;
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1';
+                    });
+                });
+            } else {
+                console.error('未找到登录表单');
+            }
+        });
+    </script>
+</body>
+</html>

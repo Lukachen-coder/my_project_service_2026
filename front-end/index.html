@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>上门服务系统 - 首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 60px; /* 为底部 tab 留出空间 */
+        }
+        
+        /* 头部导航栏 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .header-icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .header-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            padding: 16px 20px;
+            background-color: var(--card-background);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 14px;
+            background-color: #f0f0f0;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        /* 服务金刚区 */
+        .services-section {
+            padding: 24px 20px;
+            background-color: var(--card-background);
+            margin: 12px 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 16px 8px;
+            border-radius: var(--border-radius);
+        }
+        
+        .service-item:hover {
+            background-color: #f9f9f9;
+            transform: translateY(-2px);
+        }
+        
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background-color: #f0f8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 24px;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .service-item:hover .service-icon {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .service-name {
+            font-size: 14px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        /* 推荐服务 */
+        .recommended-section {
+            padding: 24px 20px;
+            background-color: var(--card-background);
+            margin: 12px 0;
+        }
+        
+        .recommended-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .recommended-item {
+            width: 100%;
+            max-width: 400px;
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+            display: flex;
+        }
+        
+        .recommended-image {
+            width: 120px;
+            height: 120px;
+            flex-shrink: 0;
+            font-size: 32px;
+            color: var(--text-secondary);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .recommended-content {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recommended-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .recommended-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-top: 8px;
+        }
+        
+        /* 底部 tab 导航 */
+        .bottom-tab {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-background);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 99;
+        }
+        
+        .swiper {
+            height: 60px;
+        }
+        
+        .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .swiper-slide-active .tab-icon {
+            color: var(--primary-color);
+        }
+        
+        .swiper-slide-active .tab-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        
+        .tab-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .service-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .service-name {
+                font-size: 13px;
+            }
+            
+            .recommended-item {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .services-grid {
+                gap: 16px;
+            }
+            
+            .service-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 18px;
+            }
+            
+            .service-name {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <h1>上门服务</h1>
+            <div class="header-right">
+                <i class="fas fa-bell header-icon"></i>
+                <div class="header-user" style="margin-right: 16px; font-weight: 500;">用户</div>
+                <i class="fas fa-user header-icon"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索服务...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </div>
+    
+    <!-- 服务金刚区 -->
+    <section class="services-section">
+        <h2 class="section-title">热门服务</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span class="service-name">上门做饭</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <span class="service-name">上门喂宠</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <span class="service-name">上门浇花</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <span class="service-name">上门健身</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-broom"></i>
+                </div>
+                <span class="service-name">上门保洁</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <span class="service-name">上门维修</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-hands"></i>
+                </div>
+                <span class="service-name">上门按摩</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <span class="service-name">上门回收</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <span class="service-name">上门理发</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 推荐服务 -->
+    <section class="recommended-section">
+        <h2 class="section-title">推荐服务</h2>
+        <div class="recommended-list">
+            <div class="recommended-item">
+                <div class="recommended-image" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20chef%20cooking%20in%20modern%20kitchen&image_size=square'); background-size: cover; background-position: center;">
+                </div>
+                <div class="recommended-content">
+                    <div class="recommended-title">专业厨师上门做饭</div>
+                    <div class="recommended-price">¥88起</div>
+                </div>
+            </div>
+            <div class="recommended-item">
+                <div class="recommended-image" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20cleaning%20service%20in%20modern%20home&image_size=square'); background-size: cover; background-position: center;">
+                </div>
+                <div class="recommended-content">
+                    <div class="recommended-title">标准家庭保洁</div>
+                    <div class="recommended-price">¥68起</div>
+                </div>
+            </div>
+            <div class="recommended-item">
+                <div class="recommended-image" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20plumbing%20and%20electrical%20repair%20service&image_size=square'); background-size: cover; background-position: center;">
+                </div>
+                <div class="recommended-content">
+                    <div class="recommended-title">水电维修服务</div>
+                    <div class="recommended-price">¥50起</div>
+                </div>
+            </div>
+            <div class="recommended-item">
+                <div class="recommended-image" style="background-image: url('https://picsum.photos/300/300?random=4'); background-size: cover; background-position: center;">
+                </div>
+                <div class="recommended-content">
+                    <div class="recommended-title">专业按摩服务</div>
+                    <div class="recommended-price">¥128起</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 底部 tab 导航 -->
+    <div class="bottom-tab">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide swiper-slide-active" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home tab-icon" style="color: var(--primary-color);"></i>
+                    <span class="tab-text" style="color: var(--primary-color); font-weight: 600;">首页</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='orders.html'">
+                    <i class="fas fa-clipboard-list tab-icon" style="color: var(--text-secondary);"></i>
+                    <span class="tab-text" style="color: var(--text-secondary);">订单</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user tab-icon" style="color: var(--text-secondary);"></i>
+                    <span class="tab-text" style="color: var(--text-secondary);">我的</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+    <script>
+        // 初始化底部 tab 导航
+        const swiper = new Swiper('.swiper', {
+            slidesPerView: 3,
+            spaceBetween: 0,
+            centeredSlides: false,
+            freeMode: true,
+            on: {
+                slideChange: function() {
+                    // 可以在这里添加页面切换逻辑
+                    console.log('当前 tab 索引:', this.activeIndex);
+                }
+            }
+        });
+        
+        // 服务项点击事件
+        document.querySelectorAll('.service-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const serviceName = this.querySelector('.service-name').textContent;
+                // 根据服务类型跳转到不同的页面
+                if (serviceName === '上门做饭') {
+                    window.location.href = 'service.html?service=cooking';
+                } else if (serviceName === '上门喂宠') {
+                    window.location.href = 'service.html?service=pet';
+                } else if (serviceName === '上门浇花') {
+                    window.location.href = 'service.html?service=plant';
+                } else if (serviceName === '上门健身') {
+                    window.location.href = 'service.html?service=fitness';
+                } else if (serviceName === '上门保洁') {
+                    window.location.href = 'service.html?service=cleaning';
+                } else if (serviceName === '上门维修') {
+                    window.location.href = 'service.html?service=repair';
+                } else if (serviceName === '上门按摩') {
+                    window.location.href = 'service.html?service=massage';
+                } else if (serviceName === '上门回收') {
+                    window.location.href = 'service.html?service=recycle';
+                } else if (serviceName === '上门理发') {
+                    window.location.href = 'service.html?service=haircut';
+                } else {
+                    // 其他服务跳转到通用服务页面
+                    window.location.href = 'service.html';
+                }
+            });
+        });
+        
+        // 推荐服务点击事件
+        document.querySelectorAll('.recommended-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const serviceTitle = this.querySelector('.recommended-title').textContent;
+                // 根据服务标题跳转到不同的页面
+                if (serviceTitle === '专业厨师上门做饭') {
+                    window.location.href = 'service.html?service=cooking';
+                } else if (serviceTitle === '标准家庭保洁') {
+                    window.location.href = 'service.html?service=cleaning';
+                } else if (serviceTitle === '水电维修服务') {
+                    window.location.href = 'service.html?service=repair';
+                } else if (serviceTitle === '专业按摩服务') {
+                    window.location.href = 'service.html?service=massage';
+                }
+            });
+        });
+        
+        // 页面加载时显示用户信息
+        function loadUserInfo() {
+            const username = sessionStorage.getItem('username');
+            if (username) {
+                document.querySelector('.header-user').textContent = username;
+            }
+        }
+        
+        // 页面加载完成后执行
+        window.onload = function() {
+            loadUserInfo();
+        };
+    </script>
+</body>
+</html>

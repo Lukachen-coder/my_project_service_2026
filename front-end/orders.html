@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上门服务系统 - 订单管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-gradient);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px; /* 为底部导航留出空间 */
+        }
+
+        /* 头部导航栏 */
+        .header {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            margin-right: 16px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* 订单管理容器 */
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 订单列表 */
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 订单项 */
+        .order-item {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+        }
+
+        .order-item:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        /* 订单头部 */
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: #fff;
+        }
+
+        .status-completed {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        /* 订单内容 */
+        .order-content {
+            margin-bottom: 12px;
+        }
+
+        .order-service {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .order-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: pre-line;
+        }
+
+        /* 订单底部 */
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .order-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        .order-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 订单操作 */
+        .order-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .cancel-btn, .pay-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .pay-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .pay-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* 弹窗式提示组件 - 页面中央显示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            padding: 20px 32px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4CAF50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+
+        .toast.info {
+            background-color: #2196F3;
+        }
+
+        .toast.loading {
+            background-color: #333333;
+        }
+        
+        /* 自定义确认对话框 */
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-dialog.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .confirm-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            width: 80%;
+            max-width: 320px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .confirm-dialog.show .confirm-content {
+            transform: scale(1);
+        }
+        
+        .confirm-message {
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .confirm-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-btn.cancel {
+            background-color: #f5f5f5;
+            color: var(--text-secondary);
+        }
+        
+        .confirm-btn.cancel:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .confirm-btn.confirm {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .confirm-btn.confirm:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* 底部 tab 导航 */
+        .bottom-tab {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-background);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .tab-list {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .tab-item {
+            text-align: center;
+            padding: 16px 0;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .tab-item:hover {
+            color: var(--primary-color);
+        }
+
+        /* 高亮状态 */
+        .tab-item.active {
+            color: var(--primary-color);
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab-item.active .tab-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-item.active .tab-text {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .tab-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .order-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <i class="fas fa-arrow-left back-button" onclick="window.history.back()"></i>
+                <h1>订单管理</h1>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 订单管理容器 -->
+    <div class="orders-container">
+        <!-- 订单列表 -->
+        <div class="order-list" id="orderList">
+            <!-- 订单项将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 弹窗式提示容器 -->
+    <div id="toastContainer"></div>
+    
+    <!-- 自定义确认对话框 -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-content">
+            <div class="confirm-message">确定要取消这个订单吗？</div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn cancel" onclick="closeConfirmDialog()">取消</button>
+                <button class="confirm-btn confirm" onclick="confirmCancelOrder()">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部 tab 导航 -->
+    <div class="bottom-tab">
+        <ul class="tab-list">
+            <li class="tab-item" onclick="window.location.href='index.html'">
+                <i class="fas fa-home tab-icon"></i>
+                <div class="tab-text">首页</div>
+            </li>
+            <li class="tab-item" onclick="window.location.href='orders.html'">
+                <i class="fas fa-clipboard-list tab-icon"></i>
+                <div class="tab-text">订单</div>
+            </li>
+            <li class="tab-item" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user tab-icon"></i>
+                <div class="tab-text">我的</div>
+            </li>
+        </ul>
+    </div>
+    
+    <script>
+        // 全局变量：当前显示的弹窗
+        let currentToast = null;
+        let currentOrderId = null;
+
+        // 弹窗式提示函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // 先移除之前的弹窗
+            if (currentToast && toastContainer.contains(currentToast)) {
+                toastContainer.removeChild(currentToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            currentToast = toast;
+
+            toastContainer.appendChild(toast);
+
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // 只有非 loading 类型才会自动消失
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toastContainer.contains(toast)) {
+                            toastContainer.removeChild(toast);
+                            if (currentToast === toast) {
+                                currentToast = null;
+                            }
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        // 移除弹窗
+        function removeToast(toast) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toast && toastContainer.contains(toast)) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                        if (currentToast === toast) {
+                            currentToast = null;
+                        }
+                    }
+                }, 300);
+            }
+        }
+        
+        // 加载订单列表
+        function loadOrders() {
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch(`http://localhost:8001/api/orders${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderOrderList(data.data);
+                    } else {
+                        showToast('加载订单失败', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading orders:', error);
+                    showToast('加载订单失败，请检查网络连接', 'error');
+                });
+        }
+        
+        // 渲染订单列表
+        function renderOrderList(orders) {
+            const orderList = document.getElementById('orderList');
+            orderList.innerHTML = '';
+            
+            if (orders.length === 0) {
+                orderList.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">暂无订单，请去首页下单</div>';
+                return;
+            }
+            
+            orders.forEach(order => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+                
+                // 获取订单ID，处理不同字段名的情况
+                const orderId = order.id || order.order_id || 'undefined';
+                
+                // 格式化时间
+                let orderTime = 'Invalid Date';
+                if (order.timestamp) {
+                    orderTime = new Date(order.timestamp).toLocaleString('zh-CN');
+                } else if (order.created_at) {
+                    orderTime = new Date(order.created_at).toLocaleString('zh-CN');
+                }
+                
+                orderItem.innerHTML = `
+                    <div class="order-header">
+                        <div class="order-id">订单号: ${orderId}</div>
+                        <div class="order-status ${order.status === 'pending' ? 'status-pending' : 'status-completed'}">
+                            ${order.status === 'pending' ? '待处理' : '已完成'}
+                        </div>
+                    </div>
+                    <div class="order-content">
+                        <div class="order-service">
+                            ${getServiceTypeName(order.service_type)}
+                        </div>
+                        <div class="order-details">
+                            ${getServiceDetails(order.service_type, order.details)}
+                        </div>
+                    </div>
+                    <div class="order-footer">
+                        <div class="order-price">¥${getServicePrice(order.service_type)}</div>
+                        <div class="order-time">${orderTime}</div>
+                    </div>
+                    <div class="order-actions">
+                        <button class="cancel-btn" onclick="cancelOrder('${orderId}')">取消订单</button>
+                        <button class="pay-btn" onclick="payOrder('${orderId}')">立即支付</button>
+                    </div>
+                `;
+                
+                orderList.appendChild(orderItem);
+            });
+        }
+        
+        // 取消订单
+        function cancelOrder(orderId) {
+            currentOrderId = orderId;
+            showConfirmDialog();
+        }
+        
+        // 显示确认对话框
+        function showConfirmDialog() {
+            const confirmDialog = document.getElementById('confirmDialog');
+            confirmDialog.classList.add('show');
+        }
+        
+        // 关闭确认对话框
+        function closeConfirmDialog() {
+            const confirmDialog = document.getElementById('confirmDialog');
+            confirmDialog.classList.remove('show');
+            currentOrderId = null;
+        }
+        
+        // 确认取消订单
+        function confirmCancelOrder() {
+            if (!currentOrderId) return;
+            
+            const loadingToast = showToast('取消中...', 'loading', 0);
+            
+            // 调用取消订单的API
+            fetch(`http://localhost:8001/api/order/${currentOrderId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                removeToast(loadingToast);
+                if (data.success) {
+                    showToast('订单取消成功', 'success');
+                    loadOrders();
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error canceling order:', error);
+                removeToast(loadingToast);
+                showToast('订单取消失败，请检查网络连接', 'error');
+            })
+            .finally(() => {
+                closeConfirmDialog();
+            });
+        }
+        
+        // 支付订单
+        function payOrder(orderId) {
+            const loadingToast = showToast('支付中...', 'loading', 0);
+            
+            // 这里可以添加支付订单的API调用
+            setTimeout(() => {
+                removeToast(loadingToast);
+                showToast('支付成功', 'success');
+                loadOrders();
+            }, 1000);
+        }
+        
+        // 获取服务类型名称
+        function getServiceTypeName(serviceType) {
+            const serviceTypes = {
+                'cooking': '上门做饭服务',
+                'pet': '上门喂宠服务',
+                'cleaning': '上门保洁服务',
+                'fitness': '上门健身服务',
+                'repair': '上门维修服务',
+                'laundry': '上门洗衣服务',
+                'haircut': '上门理发服务',
+                'shopping': '上门购物服务',
+                'moving': '上门搬家服务'
+            };
+            return serviceTypes[serviceType] || '未知服务';
+        }
+        
+        // 获取服务价格
+        function getServicePrice(serviceType) {
+            const servicePrices = {
+                'cooking': '88.00',
+                'cleaning': '68.00',
+                'repair': '50.00',
+                'massage': '128.00',
+                'pet': '88.00',
+                'plant': '58.00',
+                'fitness': '158.00',
+                'laundry': '48.00',
+                'haircut': '88.00',
+                'shopping': '38.00',
+                'moving': '188.00'
+            };
+            return servicePrices[serviceType] || '128.00';
+        }
+        
+        // 获取服务详情
+        function getServiceDetails(serviceType, details) {
+            // 烹饪类型映射
+            const cookingTypeMap = {
+                'chinese': '中餐',
+                'western': '西餐',
+                'japanese': '日料',
+                'korean': '韩料',
+                'other': '其他'
+            };
+            
+            // 保洁类型映射
+            const cleaningTypeMap = {
+                'regular': '日常保洁',
+                'deep': '深度清洁',
+                'move': '搬家保洁',
+                'other': '其他'
+            };
+            
+            // 维修类型映射
+            const repairTypeMap = {
+                'water': '水电维修',
+                'furniture': '家具维修',
+                'appliance': '家电维修',
+                'other': '其他'
+            };
+            
+            // 健身类型映射
+            const fitnessTypeMap = {
+                'cardio': '有氧运动',
+                'strength': '力量训练',
+                'yoga': '瑜伽',
+                'other': '其他'
+            };
+            
+            // 宠物类型映射
+            const petTypeMap = {
+                'dog': '狗',
+                'cat': '猫',
+                'bird': '鸟',
+                'other': '其他'
+            };
+            
+            switch(serviceType) {
+                case 'cooking':
+                    const cookingType = cookingTypeMap[details.cookingType] || details.cookingType || '未指定';
+                    return `烹饪类型: ${cookingType}\n菜品数量: ${details.cookingDishes || '未指定'}`;
+                case 'pet':
+                    const petType = petTypeMap[details.petType] || details.petType || '未指定';
+                    return `宠物类型: ${petType}\n宠物品种: ${details.petBreed || '未指定'}`;
+                case 'cleaning':
+                    const cleaningType = cleaningTypeMap[details.cleaningType] || details.cleaningType || '未指定';
+                    return `保洁类型: ${cleaningType}\n保洁面积: ${details.cleaningArea || '未指定'}㎡`;
+                case 'fitness':
+                    const fitnessType = fitnessTypeMap[details.fitnessType] || details.fitnessType || '未指定';
+                    return `健身类型: ${fitnessType}\n健身时长: ${details.fitnessDuration || '未指定'}分钟`;
+                case 'repair':
+                    const repairType = repairTypeMap[details.repairType] || details.repairType || '未指定';
+                    return `维修类型: ${repairType}\n维修详情: ${details.repairDetails || '未指定'}`;
+                case 'laundry':
+                    return `洗衣类型: ${details.laundryType || '未指定'}\n衣物数量: ${details.laundryAmount || '未指定'}`;
+                case 'haircut':
+                    return `理发类型: ${details.haircutType || '未指定'}\n理发样式: ${details.haircutStyle || '未指定'}`;
+                case 'shopping':
+                    return `购物类型: ${details.shoppingType || '未指定'}\n购物预算: ¥${details.shoppingBudget || '0'}`;
+                case 'moving':
+                    return `搬家类型: ${details.movingType || '未指定'}\n搬家距离: ${details.movingDistance || '未指定'}公里`;
+                default:
+                    return '暂无详情';
+            }
+        }
+        
+        // 页面加载时加载订单列表和设置底部导航高亮
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+            
+            // 设置底部导航高亮
+            const swiperSlides = document.querySelectorAll('.tab-item');
+            
+            swiperSlides.forEach(slide => {
+                const href = slide.getAttribute('onclick').match(/window\.location\.href='([^']+)'/)[1];
+                if (href === 'orders.html') {
+                    slide.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

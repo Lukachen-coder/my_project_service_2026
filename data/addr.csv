@@ -1,0 +1,7 @@
+id,user_id,name,phone,province,city,district,address,is_default
+1,user123,lukachen,123456,浙江,杭州,拱墅,拱墅区,0
+2,user123,Test User,123456789,北京,北京,朝阳,测试地址,0
+3,user123,456,188,北京市,朝阳区,拱墅,洛杉矶,0
+4,admin,123,123456,北京市,朝阳,朝阳,朝阳区6号,0
+5,luka,luka,123456,浙江省,杭州,拱墅区,拱墅51号,1
+6,luka,luka,123456,浙江省,杭州,上城,51,0

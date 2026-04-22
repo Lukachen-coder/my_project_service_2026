@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>上门服务系统 - 服务详情</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 60px; /* 为底部 tab 留出空间 */
+        }
+        
+        /* 头部导航栏 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .back-button {
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 服务详情容器 */
+        .service-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* 服务类型选择 */
+        .service-section {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+        }
+        
+        .service-image {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .service-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .service-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .service-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .service-features {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+        
+        .service-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .service-features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .service-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+        
+        .service-type-section {
+            background-color: var(--card-background);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .service-type-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .service-type-option {
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .service-type-option:hover {
+            border-color: var(--primary-color);
+            background-color: #f9f9f9;
+        }
+        
+        .service-type-option.active {
+            border-color: var(--primary-color);
+            background-color: #f0f8f0;
+            color: var(--primary-color);
+        }
+        
+        .service-type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        /* 服务表单 */
+        .service-form-section {
+            background-color: var(--card-background);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: #f9f9f9;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        /* 提交按钮 */
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        
+        .submit-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* 弹窗式提示组件 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+        
+        .toast.info {
+            background-color: #2196F3;
+        }
+        
+        /* 动画 */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        /* 底部 tab 导航 */
+        .bottom-tab {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-background);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 99;
+        }
+        
+        .swiper {
+            height: 60px;
+        }
+        
+        .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .swiper-slide-active .tab-icon {
+            color: var(--primary-color);
+        }
+        
+        .swiper-slide-active .tab-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        
+        .tab-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .service-type-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <i class="fas fa-arrow-left back-button" onclick="window.history.back()"></i>
+                <h1>服务详情</h1>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 服务详情容器 -->
+    <div class="service-container">
+        <!-- 上门做饭服务 -->
+        <div id="cookingService" class="service-section">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20chef%20cooking%20delicious%20food%20in%20kitchen&image_size=landscape_4_3" alt="上门做饭">
+            </div>
+            <h2 class="service-title">专业厨师上门做饭</h2>
+            <p class="service-description">
+                星级厨师上门服务，根据您的口味需求，为您准备美味佳肴。使用新鲜食材，营养搭配合理，让您在家就能享受 restaurant 级别的美食。
+            </p>
+            <ul class="service-features">
+                <li>专业厨师，经验丰富</li>
+                <li>新鲜食材，健康卫生</li>
+                <li>个性化菜单，满足需求</li>
+                <li>餐后清理，服务周到</li>
+            </ul>
+            <div class="service-price">¥88/次起</div>
+        </div>
+        
+        <!-- 上门喂宠服务 -->
+        <div id="petService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20pet%20sitter%20feeding%20cute%20pets&image_size=landscape_4_3" alt="上门喂宠">
+            </div>
+            <h2 class="service-title">专业宠物护理</h2>
+            <p class="service-description">
+                专业宠物护理师上门服务，为您的爱宠提供喂食、遛弯、玩耍等全方位护理。让您不在家时，爱宠也能得到细心照顾。
+            </p>
+            <ul class="service-features">
+                <li>专业护理，经验丰富</li>
+                <li>按时喂食，保证健康</li>
+                <li>遛弯玩耍，保持活力</li>
+                <li>定期反馈，让您放心</li>
+            </ul>
+            <div class="service-price">¥88/次起</div>
+        </div>
+        
+        <!-- 上门浇花服务 -->
+        <div id="plantService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20gardener%20watering%20plants%20in%20home&image_size=landscape_4_3" alt="上门浇花">
+            </div>
+            <h2 class="service-title">专业花卉护理</h2>
+            <p class="service-description">
+                专业园艺师上门服务，为您的花卉提供浇水、施肥、修剪等全方位护理。让您的植物保持健康生长，绿意盎然。
+            </p>
+            <ul class="service-features">
+                <li>专业园艺师，经验丰富</li>
+                <li>科学浇水，合理施肥</li>
+                <li>定期修剪，保持美观</li>
+                <li>植物健康状况评估</li>
+            </ul>
+            <div class="service-price">¥58/次起</div>
+        </div>
+        
+        <!-- 上门健身服务 -->
+        <div id="fitnessService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20personal%20trainer%20guiding%20workout%20at%20home&image_size=landscape_4_3" alt="上门健身">
+            </div>
+            <h2 class="service-title">专业健身指导</h2>
+            <p class="service-description">
+                专业健身教练上门服务，根据您的身体状况和健身目标，为您定制个性化的健身计划，提供专业指导。
+            </p>
+            <ul class="service-features">
+                <li>专业教练，资质认证</li>
+                <li>个性化健身计划</li>
+                <li>专业动作指导</li>
+                <li>科学训练方法</li>
+            </ul>
+            <div class="service-price">¥158/次起</div>
+        </div>
+        
+        <!-- 上门保洁服务 -->
+        <div id="cleaningService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20cleaner%20cleaning%20home%20thoroughly&image_size=landscape_4_3" alt="上门保洁">
+            </div>
+            <h2 class="service-title">专业家庭保洁</h2>
+            <p class="service-description">
+                专业保洁人员上门服务，为您的家庭提供全方位的清洁服务，包括客厅、卧室、厨房、卫生间等各个空间。
+            </p>
+            <ul class="service-features">
+                <li>专业保洁，经验丰富</li>
+                <li>使用环保清洁剂</li>
+                <li>全方位深度清洁</li>
+                <li>服务周到，态度好</li>
+            </ul>
+            <div class="service-price">¥68/次起</div>
+        </div>
+        
+        <!-- 上门维修服务 -->
+        <div id="repairService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20repairman%20fixing%20household%20appliances&image_size=landscape_4_3" alt="上门维修">
+            </div>
+            <h2 class="service-title">专业维修服务</h2>
+            <p class="service-description">
+                专业维修师傅上门服务，为您解决各种家庭维修问题，包括水电维修、家具维修、家电维修等。
+            </p>
+            <ul class="service-features">
+                <li>专业师傅，技术精湛</li>
+                <li>快速响应，及时上门</li>
+                <li>价格透明，无隐藏费用</li>
+                <li>提供维修保障</li>
+            </ul>
+            <div class="service-price">¥50/次起</div>
+        </div>
+        
+        <!-- 上门按摩服务 -->
+        <div id="massageService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20masseuse%20giving%20massage%20at%20home&image_size=landscape_4_3" alt="上门按摩">
+            </div>
+            <h2 class="service-title">专业按摩服务</h2>
+            <p class="service-description">
+                专业按摩师上门服务，为您提供全身按摩、局部按摩等多种按摩服务，缓解疲劳，放松身心。
+            </p>
+            <ul class="service-features">
+                <li>专业按摩师，经验丰富</li>
+                <li>多种按摩手法</li>
+                <li>舒适的按摩环境</li>
+                <li>缓解疲劳，放松身心</li>
+            </ul>
+            <div class="service-price">¥128/次起</div>
+        </div>
+        
+        <!-- 上门回收服务 -->
+        <div id="recycleService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20recycling%20service%20collecting%20items%20from%20home&image_size=landscape_4_3" alt="上门回收">
+            </div>
+            <h2 class="service-title">专业回收服务</h2>
+            <p class="service-description">
+                专业回收人员上门服务，为您回收各种可回收物品，包括旧家电、旧家具、废纸、废塑料等。
+            </p>
+            <ul class="service-features">
+                <li>专业回收，环保处理</li>
+                <li>上门取件，方便快捷</li>
+                <li>合理定价，童叟无欺</li>
+                <li>支持多种回收物品</li>
+            </ul>
+            <div class="service-price">¥38/次起</div>
+        </div>
+        
+        <!-- 上门理发服务 -->
+        <div id="haircutService" class="service-section" style="display: none;">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20hairdresser%20cutting%20hair%20at%20home&image_size=landscape_4_3" alt="上门理发">
+            </div>
+            <h2 class="service-title">专业理发服务</h2>
+            <p class="service-description">
+                专业理发师上门服务，为您提供理发、造型、烫发等多种美发服务，让您在家就能享受专业的美发体验。
+            </p>
+            <ul class="service-features">
+                <li>专业理发师，技术精湛</li>
+                <li>多种发型选择</li>
+                <li>使用专业美发产品</li>
+                <li>服务周到，态度好</li>
+            </ul>
+            <div class="service-price">¥88/次起</div>
+        </div>
+        
+
+        
+        <!-- 服务表单 -->
+        <div class="service-form-section">
+            <h2 class="section-title">服务详情</h2>
+            <form id="serviceForm">
+                <!-- 通用字段 -->
+                <div class="form-group">
+                    <label for="name">联系人姓名</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">联系电话</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">服务地址</label>
+                    <div id="addressSelector">
+                        <select id="addressSelect" name="address" required>
+                            <option value="">请选择地址</option>
+                            <!-- 地址选项将通过JavaScript动态生成 -->
+                        </select>
+                        <button type="button" class="add-address-link" onclick="goToAddAddress()" style="margin-top: 10px; padding: 8px 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">添加新地址</button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">服务日期</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">服务时间</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                </div>
+                
+                <!-- 上门做饭特有字段 -->
+                <div id="cookingFields">
+                    <div class="form-group">
+                        <label for="cookingType">烹饪类型</label>
+                        <select id="cookingType" name="cookingType">
+                            <option value="chinese">中餐</option>
+                            <option value="western">西餐</option>
+                            <option value="japanese">日料</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cookingDishes">菜品数量</label>
+                        <select id="cookingDishes" name="cookingDishes">
+                            <option value="2">2道菜</option>
+                            <option value="3">3道菜</option>
+                            <option value="4">4道菜</option>
+                            <option value="5">5道菜</option>
+                            <option value="more">5道以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cookingNotes">特殊要求</label>
+                        <input type="text" id="cookingNotes" name="cookingNotes" placeholder="例如：不要辣、有过敏食材等">
+                    </div>
+                </div>
+                
+                <!-- 上门喂宠特有字段 -->
+                <div id="petFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="petType">宠物类型</label>
+                        <select id="petType" name="petType">
+                            <option value="dog">狗</option>
+                            <option value="cat">猫</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="petCount">宠物数量</label>
+                        <select id="petCount" name="petCount">
+                            <option value="1">1只</option>
+                            <option value="2">2只</option>
+                            <option value="3">3只</option>
+                            <option value="more">3只以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="petNotes">特殊要求</label>
+                        <input type="text" id="petNotes" name="petNotes" placeholder="例如：宠物性格、特殊饮食等">
+                    </div>
+                </div>
+                
+                <!-- 上门浇花特有字段 -->
+                <div id="plantFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="plantType">花卉类型</label>
+                        <select id="plantType" name="plantType">
+                            <option value="indoor">室内植物</option>
+                            <option value="outdoor">室外植物</option>
+                            <option value="both">室内外都有</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="plantCount">植物数量</label>
+                        <select id="plantCount" name="plantCount">
+                            <option value="1-5">1-5盆</option>
+                            <option value="6-10">6-10盆</option>
+                            <option value="11-20">11-20盆</option>
+                            <option value="more">20盆以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="plantNotes">特殊要求</label>
+                        <input type="text" id="plantNotes" name="plantNotes" placeholder="例如：特殊浇水要求、施肥需求等">
+                    </div>
+                </div>
+                
+                <!-- 上门健身特有字段 -->
+                <div id="fitnessFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="fitnessType">健身类型</label>
+                        <select id="fitnessType" name="fitnessType">
+                            <option value="cardio">有氧运动</option>
+                            <option value="strength">力量训练</option>
+                            <option value="yoga">瑜伽</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fitnessDuration">训练时长</label>
+                        <select id="fitnessDuration" name="fitnessDuration">
+                            <option value="30">30分钟</option>
+                            <option value="60">60分钟</option>
+                            <option value="90">90分钟</option>
+                            <option value="120">120分钟</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fitnessNotes">特殊要求</label>
+                        <input type="text" id="fitnessNotes" name="fitnessNotes" placeholder="例如：身体状况、健身目标等">
+                    </div>
+                </div>
+                
+                <!-- 上门保洁特有字段 -->
+                <div id="cleaningFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="cleaningType">保洁类型</label>
+                        <select id="cleaningType" name="cleaningType">
+                            <option value="regular">日常保洁</option>
+                            <option value="deep">深度清洁</option>
+                            <option value="move">搬家保洁</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cleaningArea">清洁面积</label>
+                        <select id="cleaningArea" name="cleaningArea">
+                            <option value="50">50㎡以下</option>
+                            <option value="50-100">50-100㎡</option>
+                            <option value="100-150">100-150㎡</option>
+                            <option value="150+">150㎡以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cleaningNotes">特殊要求</label>
+                        <input type="text" id="cleaningNotes" name="cleaningNotes" placeholder="例如：重点清洁区域、特殊清洁需求等">
+                    </div>
+                </div>
+                
+                <!-- 上门维修特有字段 -->
+                <div id="repairFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="repairType">维修类型</label>
+                        <select id="repairType" name="repairType">
+                            <option value="water">水电维修</option>
+                            <option value="furniture">家具维修</option>
+                            <option value="appliance">家电维修</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="repairDescription">维修描述</label>
+                        <input type="text" id="repairDescription" name="repairDescription" placeholder="请简要描述需要维修的问题">
+                    </div>
+                    <div class="form-group">
+                        <label for="repairNotes">特殊要求</label>
+                        <input type="text" id="repairNotes" name="repairNotes" placeholder="例如：维修时间、特殊工具需求等">
+                    </div>
+                </div>
+                
+                <!-- 上门按摩特有字段 -->
+                <div id="massageFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="massageType">按摩类型</label>
+                        <select id="massageType" name="massageType">
+                            <option value="full">全身按摩</option>
+                            <option value="partial">局部按摩</option>
+                            <option value="foot">足疗</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="massageDuration">按摩时长</label>
+                        <select id="massageDuration" name="massageDuration">
+                            <option value="30">30分钟</option>
+                            <option value="60">60分钟</option>
+                            <option value="90">90分钟</option>
+                            <option value="120">120分钟</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="massageNotes">特殊要求</label>
+                        <input type="text" id="massageNotes" name="massageNotes" placeholder="例如：按摩力度、身体状况等">
+                    </div>
+                </div>
+                
+                <!-- 上门回收特有字段 -->
+                <div id="recycleFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="recycleType">回收类型</label>
+                        <select id="recycleType" name="recycleType">
+                            <option value="appliance">旧家电</option>
+                            <option value="furniture">旧家具</option>
+                            <option value="paper">废纸</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recycleItems">回收物品描述</label>
+                        <input type="text" id="recycleItems" name="recycleItems" placeholder="请简要描述需要回收的物品">
+                    </div>
+                    <div class="form-group">
+                        <label for="recycleNotes">特殊要求</label>
+                        <input type="text" id="recycleNotes" name="recycleNotes" placeholder="例如：物品位置、特殊处理要求等">
+                    </div>
+                </div>
+                
+                <!-- 上门理发特有字段 -->
+                <div id="haircutFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="haircutType">理发类型</label>
+                        <select id="haircutType" name="haircutType">
+                            <option value="men">男士理发</option>
+                            <option value="women">女士理发</option>
+                            <option value="children">儿童理发</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="haircutStyle">发型要求</label>
+                        <input type="text" id="haircutStyle" name="haircutStyle" placeholder="请描述您想要的发型">
+                    </div>
+                    <div class="form-group">
+                        <label for="haircutNotes">特殊要求</label>
+                        <input type="text" id="haircutNotes" name="haircutNotes" placeholder="例如：头发长度、特殊造型需求等">
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-button">提交订单</button>
+        </form>
+    </div>
+</div>
+
+<!-- 弹窗式提示容器 -->
+<div id="toastContainer"></div>
+    
+    <!-- 底部 tab 导航 -->
+    <div class="bottom-tab">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home tab-icon"></i>
+                    <span class="tab-text">首页</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='orders.html'">
+                    <i class="fas fa-clipboard-list tab-icon"></i>
+                    <span class="tab-text">订单</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user tab-icon"></i>
+                    <span class="tab-text">我的</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+    <script>
+        // 初始化底部 tab 导航
+        const swiper = new Swiper('.swiper', {
+            slidesPerView: 3,
+            spaceBetween: 0,
+            centeredSlides: false,
+            freeMode: true
+        });
+        
+        // 服务类型变量，默认值为'cooking'
+        let selectedService = 'cooking';
+        
+        // 显示对应的服务内容和表单字段
+        function showServiceContent(serviceType) {
+            // 隐藏所有服务内容和表单字段
+            document.getElementById('cookingService').style.display = 'none';
+            document.getElementById('petService').style.display = 'none';
+            document.getElementById('plantService').style.display = 'none';
+            document.getElementById('fitnessService').style.display = 'none';
+            document.getElementById('cleaningService').style.display = 'none';
+            document.getElementById('repairService').style.display = 'none';
+            document.getElementById('massageService').style.display = 'none';
+            document.getElementById('recycleService').style.display = 'none';
+            document.getElementById('haircutService').style.display = 'none';
+            
+            document.getElementById('cookingFields').style.display = 'none';
+            document.getElementById('petFields').style.display = 'none';
+            document.getElementById('plantFields').style.display = 'none';
+            document.getElementById('fitnessFields').style.display = 'none';
+            document.getElementById('cleaningFields').style.display = 'none';
+            document.getElementById('repairFields').style.display = 'none';
+            document.getElementById('massageFields').style.display = 'none';
+            document.getElementById('recycleFields').style.display = 'none';
+            document.getElementById('haircutFields').style.display = 'none';
+            
+            // 显示对应的服务内容和表单字段
+            if (serviceType === 'cooking') {
+                document.getElementById('cookingService').style.display = 'block';
+                document.getElementById('cookingFields').style.display = 'block';
+            } else if (serviceType === 'pet') {
+                document.getElementById('petService').style.display = 'block';
+                document.getElementById('petFields').style.display = 'block';
+            } else if (serviceType === 'plant') {
+                document.getElementById('plantService').style.display = 'block';
+                document.getElementById('plantFields').style.display = 'block';
+            } else if (serviceType === 'fitness') {
+                document.getElementById('fitnessService').style.display = 'block';
+                document.getElementById('fitnessFields').style.display = 'block';
+            } else if (serviceType === 'cleaning') {
+                document.getElementById('cleaningService').style.display = 'block';
+                document.getElementById('cleaningFields').style.display = 'block';
+            } else if (serviceType === 'repair') {
+                document.getElementById('repairService').style.display = 'block';
+                document.getElementById('repairFields').style.display = 'block';
+            } else if (serviceType === 'massage') {
+                document.getElementById('massageService').style.display = 'block';
+                document.getElementById('massageFields').style.display = 'block';
+            } else if (serviceType === 'recycle') {
+                document.getElementById('recycleService').style.display = 'block';
+                document.getElementById('recycleFields').style.display = 'block';
+            } else if (serviceType === 'haircut') {
+                document.getElementById('haircutService').style.display = 'block';
+                document.getElementById('haircutFields').style.display = 'block';
+            }
+        }
+        
+        // 表单提交
+        document.getElementById('serviceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 验证服务类型是否选择
+            if (!selectedService) {
+                showMessage('请选择服务类型', 'error');
+                return;
+            }
+            
+            // 收集表单数据
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('addressSelect').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value
+            };
+            
+            // 收集服务特有字段
+            if (selectedService === 'cooking') {
+                formData.cookingType = document.getElementById('cookingType').value;
+                formData.cookingDishes = document.getElementById('cookingDishes').value;
+                formData.cookingNotes = document.getElementById('cookingNotes').value;
+            } else if (selectedService === 'pet') {
+                formData.petType = document.getElementById('petType').value;
+                formData.petCount = document.getElementById('petCount').value;
+                formData.petNotes = document.getElementById('petNotes').value;
+            } else if (selectedService === 'plant') {
+                formData.plantType = document.getElementById('plantType').value;
+                formData.plantCount = document.getElementById('plantCount').value;
+                formData.plantNotes = document.getElementById('plantNotes').value;
+            } else if (selectedService === 'fitness') {
+                formData.fitnessType = document.getElementById('fitnessType').value;
+                formData.fitnessDuration = document.getElementById('fitnessDuration').value;
+                formData.fitnessNotes = document.getElementById('fitnessNotes').value;
+            } else if (selectedService === 'cleaning') {
+                formData.cleaningType = document.getElementById('cleaningType').value;
+                formData.cleaningArea = document.getElementById('cleaningArea').value;
+                formData.cleaningNotes = document.getElementById('cleaningNotes').value;
+            } else if (selectedService === 'repair') {
+                formData.repairType = document.getElementById('repairType').value;
+                formData.repairDescription = document.getElementById('repairDescription').value;
+                formData.repairNotes = document.getElementById('repairNotes').value;
+            } else if (selectedService === 'massage') {
+                formData.massageType = document.getElementById('massageType').value;
+                formData.massageDuration = document.getElementById('massageDuration').value;
+                formData.massageNotes = document.getElementById('massageNotes').value;
+            } else if (selectedService === 'recycle') {
+                formData.recycleType = document.getElementById('recycleType').value;
+                formData.recycleItems = document.getElementById('recycleItems').value;
+                formData.recycleNotes = document.getElementById('recycleNotes').value;
+            } else if (selectedService === 'haircut') {
+                formData.haircutType = document.getElementById('haircutType').value;
+                formData.haircutStyle = document.getElementById('haircutStyle').value;
+                formData.haircutNotes = document.getElementById('haircutNotes').value;
+            }
+            
+            // 发送请求
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch('http://localhost:8001/api/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    service_type: selectedService,
+                    details: formData,
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('订单提交成功', 'success');
+                    // 跳转到订单页面
+                    setTimeout(() => {
+                        window.location.href = 'orders.html';
+                    }, 1500);
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting order:', error);
+                showMessage('订单提交失败，请检查网络连接', 'error');
+            })
+        });
+        
+        // 加载地址列表
+        function loadAddresses() {
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch(`http://localhost:8001/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const addressSelect = document.getElementById('addressSelect');
+                        addressSelect.innerHTML = '<option value="">请选择地址</option>';
+                        
+                        let defaultAddressSelected = false;
+                        
+                        data.data.forEach(address => {
+                            const option = document.createElement('option');
+                            option.value = `${address.province}${address.city}${address.district}${address.address}`;
+                            option.textContent = `${address.name} ${address.phone} - ${address.province}${address.city}${address.district}${address.address}`;
+                            
+                            // 如果是默认地址，设置为选中状态
+                            if (address.is_default === '1') {
+                                option.selected = true;
+                                defaultAddressSelected = true;
+                            }
+                            
+                            addressSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading addresses:', error);
+                });
+        }
+        
+        // 跳转到添加地址页面
+        function goToAddAddress() {
+            // 保存当前页面的 URL，以便添加地址后返回
+            sessionStorage.setItem('returnTo', window.location.href);
+            window.location.href = 'addresses.html';
+        }
+        
+        // 弹窗式提示函数
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 3秒后移除提示
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        // 显示消息（兼容旧代码）
+        function showMessage(text, type) {
+            showToast(text, type);
+        }
+        
+        // 解析URL参数
+        function getURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                service: params.get('service')
+            };
+        }
+        
+        // 页面加载时加载地址列表和处理URL参数
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAddresses();
+            
+            // 处理URL参数
+            const params = getURLParams();
+            if (params.service) {
+                selectedService = params.service;
+                showServiceContent(selectedService);
+            } else {
+                // 默认显示上门做饭服务
+                showServiceContent('cooking');
+            }
+        });
+    </script>
+</body>
+</html>

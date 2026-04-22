@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>上门服务系统 - 地址管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 60px; /* 为底部 tab 留出空间 */
+        }
+        
+        /* 头部导航栏 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .back-button {
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 地址管理容器 */
+        .address-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* 地址列表 */
+        .address-list {
+            margin-bottom: 20px;
+        }
+        
+        .address-item {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 16px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .address-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .address-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .address-phone {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .address-detail {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .address-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .address-actions button {
+            padding: 8px 16px;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .address-actions .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .address-actions .edit-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .address-actions .delete-btn {
+            background-color: white;
+            color: var(--primary-color);
+        }
+        
+        .address-actions .delete-btn:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-1px);
+        }
+        
+        .default-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* 添加地址按钮 */
+        .add-address-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--card-background);
+            color: var(--primary-color);
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-address-btn:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        /* 地址表单 */
+        .address-form {
+            background-color: var(--card-background);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .address-form.show {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: #f9f9f9;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .form-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .form-actions .cancel-btn {
+            background-color: #f5f5f5;
+            color: var(--text-secondary);
+        }
+        
+        .form-actions .cancel-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-1px);
+        }
+        
+        .form-actions .save-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .form-actions .save-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .form-group.checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group.checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        /* 弹窗式提示组件 - 页面中央显示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            padding: 20px 32px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+        
+        .toast.info {
+            background-color: #2196F3;
+        }
+        
+        .toast.loading {
+            background-color: #333333;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .register-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <i class="fas fa-arrow-left back-button" onclick="window.history.back()"></i>
+                <h1>地址管理</h1>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 地址管理容器 -->
+    <div class="address-container">
+        <!-- 地址列表 -->
+        <div class="address-list" id="addressList">
+            <!-- 地址项将通过JavaScript动态生成 -->
+        </div>
+        
+        <!-- 添加地址按钮 -->
+        <button class="add-address-btn" onclick="toggleAddressForm()">
+            <i class="fas fa-plus"></i>
+            <span>添加新地址</span>
+        </button>
+        
+        <!-- 地址表单 -->
+        <div class="address-form" id="addressForm">
+            <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--text-primary);">添加地址</h2>
+            <form id="addressFormData">
+                <div class="form-group">
+                    <label for="name">联系人</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">联系电话</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="province">省份</label>
+                    <select id="province" name="province" required>
+                        <option value="">请选择省份</option>
+                        <option value="北京市">北京市</option>
+                        <option value="上海市">上海市</option>
+                        <option value="广东省">广东省</option>
+                        <option value="浙江省">浙江省</option>
+                        <option value="江苏省">江苏省</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city">城市</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="district">区/县</label>
+                    <input type="text" id="district" name="district" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">详细地址</label>
+                    <input type="text" id="address" name="address" required placeholder="请输入详细地址，如街道、门牌号等">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="isDefault" name="isDefault">
+                    <label for="isDefault">设为默认地址</label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="toggleAddressForm()">取消</button>
+                    <button type="submit" class="save-btn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 弹窗式提示容器 -->
+    <div id="toastContainer"></div>
+    
+    <script>
+        // 全局变量：当前显示的弹窗
+        let currentToast = null;
+
+        // 弹窗式提示函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // 先移除之前的弹窗
+            if (currentToast && toastContainer.contains(currentToast)) {
+                toastContainer.removeChild(currentToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            currentToast = toast;
+
+            toastContainer.appendChild(toast);
+
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // 只有非 loading 类型才会自动消失
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toastContainer.contains(toast)) {
+                            toastContainer.removeChild(toast);
+                            if (currentToast === toast) {
+                                currentToast = null;
+                            }
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        // 移除弹窗
+        function removeToast(toast) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toast && toastContainer.contains(toast)) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                        if (currentToast === toast) {
+                            currentToast = null;
+                        }
+                    }
+                }, 300);
+            }
+        }
+        
+        // 全局变量：当前编辑的地址ID
+        let currentEditAddressId = null;
+
+        // 切换地址表单显示/隐藏
+        function toggleAddressForm() {
+            const addressForm = document.getElementById('addressForm');
+            addressForm.classList.toggle('show');
+            
+            // 如果是关闭表单，重置表单和编辑状态
+            if (!addressForm.classList.contains('show')) {
+                resetForm();
+            }
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('addressFormData').reset();
+            currentEditAddressId = null;
+            document.querySelector('.address-form h2').textContent = '添加地址';
+        }
+        
+        // 加载地址列表
+        function loadAddresses() {
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch(`http://localhost:8001/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderAddressList(data.data);
+                    } else {
+                        showToast('加载地址失败', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading addresses:', error);
+                    showToast('加载地址失败，请检查网络连接', 'error');
+                });
+        }
+        
+        // 渲染地址列表
+        function renderAddressList(addresses) {
+            const addressList = document.getElementById('addressList');
+            addressList.innerHTML = '';
+            
+            if (addresses.length === 0) {
+                addressList.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">暂无地址，请添加新地址</div>';
+                return;
+            }
+            
+            addresses.forEach(address => {
+                const addressItem = document.createElement('div');
+                addressItem.className = 'address-item';
+                
+                addressItem.innerHTML = `
+                    ${address.is_default === '1' ? '<div class="default-tag">默认</div>' : ''}
+                    <div class="address-header">
+                        <div>
+                            <div class="address-name">${address.name}</div>
+                            <div class="address-phone">${address.phone}</div>
+                        </div>
+                    </div>
+                    <div class="address-detail">
+                        ${address.province}${address.city}${address.district}${address.address}
+                    </div>
+                    <div class="address-actions">
+                        <button class="edit-btn" onclick="editAddress('${address.id}')">编辑</button>
+                        <button class="delete-btn" onclick="deleteAddress('${address.id}')">删除</button>
+                    </div>
+                `;
+                
+                addressList.appendChild(addressItem);
+            });
+        }
+        
+        // 编辑地址
+        function editAddress(addressId) {
+            const loadingToast = showToast('加载中...', 'loading', 0);
+            
+            // 从地址列表中找到对应的地址数据
+            const addressList = document.getElementById('addressList');
+            const addressItems = addressList.querySelectorAll('.address-item');
+            let addressData = null;
+            
+            addressItems.forEach(item => {
+                const editBtn = item.querySelector('.edit-btn');
+                if (editBtn && editBtn.getAttribute('onclick').includes(addressId)) {
+                    const name = item.querySelector('.address-name').textContent;
+                    const phone = item.querySelector('.address-phone').textContent;
+                    const detail = item.querySelector('.address-detail').textContent;
+                    const isDefault = item.querySelector('.default-tag') !== null;
+                    
+                    // 解析地址详情
+                    const provinceMatch = detail.match(/^([^市]+市)/);
+                    const cityMatch = detail.match(/市([^区]+区)/);
+                    const districtMatch = detail.match(/区(.+)/);
+                    
+                    addressData = {
+                        id: addressId,
+                        name: name,
+                        phone: phone,
+                        province: provinceMatch ? provinceMatch[1].replace('市', '') : '',
+                        city: cityMatch ? cityMatch[1] : '',
+                        district: cityMatch ? cityMatch[1] : '',
+                        address: districtMatch ? districtMatch[1] : '',
+                        is_default: isDefault ? '1' : '0'
+                    };
+                }
+            });
+            
+            if (addressData) {
+                // 填充表单
+                document.getElementById('name').value = addressData.name;
+                document.getElementById('phone').value = addressData.phone;
+                document.getElementById('province').value = addressData.province;
+                document.getElementById('city').value = addressData.city;
+                document.getElementById('district').value = addressData.district;
+                document.getElementById('address').value = addressData.address;
+                document.getElementById('isDefault').checked = addressData.is_default === '1';
+                
+                // 设置编辑状态
+                currentEditAddressId = addressId;
+                document.querySelector('.address-form h2').textContent = '编辑地址';
+                
+                // 显示表单
+                document.getElementById('addressForm').classList.add('show');
+            } else {
+                showToast('加载地址失败', 'error');
+            }
+            
+            removeToast(loadingToast);
+        }
+        
+        // 删除地址
+        function deleteAddress(addressId) {
+            if (confirm('确定要删除这个地址吗？')) {
+                const loadingToast = showToast('删除中...', 'loading', 0);
+                
+                fetch(`http://localhost:8001/api/address/${addressId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('地址删除成功', 'success');
+                        loadAddresses();
+                    } else {
+                        showToast('地址删除失败', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                    showToast('地址删除失败，请检查网络连接', 'error');
+                })
+                .finally(() => {
+                    removeToast(loadingToast);
+                });
+            }
+        }
+        
+        // 表单提交
+        document.getElementById('addressFormData').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loadingToast = showToast('保存中...', 'loading', 0);
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                province: document.getElementById('province').value,
+                city: document.getElementById('city').value,
+                district: document.getElementById('district').value,
+                address: document.getElementById('address').value,
+                is_default: document.getElementById('isDefault').checked ? '1' : '0'
+            };
+            
+            const user_id = sessionStorage.getItem('user_id') || '';
+            formData.user_id = user_id;
+            
+            // 如果是编辑模式，添加id字段
+            if (currentEditAddressId) {
+                formData.id = currentEditAddressId;
+            }
+            
+            fetch('http://localhost:8001/api/addresses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(currentEditAddressId ? '地址更新成功' : '地址添加成功', 'success');
+                    toggleAddressForm();
+                    loadAddresses();
+                    
+                    // 检查是否需要返回上一页
+                    const returnTo = sessionStorage.getItem('returnTo');
+                    if (returnTo) {
+                        sessionStorage.removeItem('returnTo');
+                        setTimeout(() => {
+                            window.location.href = returnTo;
+                        }, 1500);
+                    }
+                } else {
+                    showToast(currentEditAddressId ? '地址更新失败' : '地址添加失败', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving address:', error);
+                showToast('保存失败，请检查网络连接', 'error');
+            })
+            .finally(() => {
+                removeToast(loadingToast);
+            });
+        });
+        
+        // 页面加载时加载地址列表
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAddresses();
+        });
+    </script>
+</body>
+</html>

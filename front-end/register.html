@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上门服务系统 - 注册</title>
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 装饰元素 */
+        .decorative-element {
+            position: absolute;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .decorative-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 200px;
+            height: 200px;
+            background: var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .decorative-element:nth-child(2) {
+            bottom: 10%;
+            right: 10%;
+            width: 150px;
+            height: 150px;
+            background: var(--primary-light);
+            border-radius: 50%;
+        }
+        
+        .decorative-element:nth-child(3) {
+            top: 40%;
+            right: 15%;
+            width: 100px;
+            height: 100px;
+            background: var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .login-container {
+            background: var(--card-background);
+            padding: 50px 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+        }
+        
+        .login-container:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: #f9f9f9;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        input:hover {
+            border-color: var(--primary-light);
+            background: #ffffff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        button:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 弹窗式提示组件 - 页面中央显示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            padding: 20px 32px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+        
+        .toast.info {
+            background-color: #2196F3;
+        }
+        
+        .toast.loading {
+            background-color: #333333;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .register-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 0 20px;
+                padding: 40px 30px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+            
+            input {
+                padding: 14px;
+            }
+            
+            button {
+                padding: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 24px;
+            }
+            
+            h1 {
+                font-size: 22px;
+                margin-bottom: 24px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid var(--border-color);
+            border-bottom-color: var(--primary-color);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+        
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 装饰元素 -->
+    <div class="decorative-element"></div>
+    <div class="decorative-element"></div>
+    <div class="decorative-element"></div>
+    
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <div class="login-container">
+        <h1>上门服务系统</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">再次输入密码</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit">注册</button>
+        </form>
+        <div class="register-link">
+            已有账号？<a href="login.html">立即登录</a>
+        </div>
+    </div>
+    
+    <!-- 弹窗式提示容器 -->
+    <div id="toastContainer"></div>
+    
+    <script>
+        // 全局变量：当前显示的弹窗
+        let currentToast = null;
+
+        // 弹窗式提示函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // 先移除之前的弹窗
+            if (currentToast && toastContainer.contains(currentToast)) {
+                toastContainer.removeChild(currentToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            currentToast = toast;
+
+            toastContainer.appendChild(toast);
+
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // 只有非 loading 类型才会自动消失
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toastContainer.contains(toast)) {
+                            toastContainer.removeChild(toast);
+                            if (currentToast === toast) {
+                                currentToast = null;
+                            }
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        // 移除弹窗
+        function removeToast(toast) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toast && toastContainer.contains(toast)) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                        if (currentToast === toast) {
+                            currentToast = null;
+                        }
+                    }
+                }, 300);
+            }
+        }
+
+        // 页面加载完成后隐藏加载动画
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                loader.style.opacity = '0';
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 800);
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitButton = this.querySelector('button');
+            
+            // 表单验证
+            if (!username || !password || !confirmPassword) {
+                showToast('请填写所有字段', 'error');
+                return;
+            }
+            
+            // 密码一致性校验
+            if (password !== confirmPassword) {
+                showToast('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            // 禁用按钮并显示加载状态
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = '注册中...';
+            submitButton.disabled = true;
+            submitButton.style.opacity = '0.7';
+            
+            // 显示加载弹窗
+            const loadingToast = showToast('注册中...', 'loading', 0);
+            
+            // 使用 fetch API 发送请求
+            fetch('http://localhost:8001/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 移除加载弹窗
+                removeToast(loadingToast);
+                
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    
+                    // 注册成功后添加成功动画
+                    const loginContainer = document.querySelector('.login-container');
+                    loginContainer.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        loginContainer.style.transform = 'scale(1)';
+                        // 跳转到登录页面
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1500);
+                    }, 300);
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                removeToast(loadingToast);
+                showToast('注册失败，请检查网络连接', 'error');
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>

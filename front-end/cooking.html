@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上门服务系统 - 上门做饭</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS 变量定义 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #81c784;
+            --background-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --card-background: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-gradient);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px; /* 为底部导航留出空间 */
+        }
+
+        /* 头部导航栏 */
+        .header {
+            background: var(--card-background);
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button {
+            font-size: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            margin-right: 16px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            color: var(--primary-color);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 服务详情容器 */
+        .service-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 服务部分 */
+        .service-section {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+        }
+
+        .service-section:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        .service-image {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .service-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .service-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+
+        .service-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .service-features li:before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .service-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        /* 表单部分 */
+        .service-form-section {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background: #f9f9f9;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+
+        /* 弹窗式提示组件 - 页面中央显示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4CAF50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+
+        .toast.info {
+            background-color: #2196F3;
+        }
+
+        .toast.loading {
+            background-color: #333333;
+        }
+
+        /* 底部 tab 导航 */
+        .bottom-tab {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-background);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .swiper {
+            width: 100%;
+        }
+
+        .swiper-wrapper {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            padding: 16px 0;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .swiper-slide:hover {
+            color: var(--primary-color);
+        }
+
+        /* 高亮状态 */
+        .swiper-slide.active {
+            color: var(--primary-color);
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .swiper-slide.active .tab-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .swiper-slide.active .tab-text {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .tab-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <i class="fas fa-arrow-left back-button" onclick="window.history.back()"></i>
+                <h1>上门做饭服务</h1>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 服务详情容器 -->
+    <div class="service-container">
+        <!-- 上门做饭服务 -->
+        <div class="service-section">
+            <div class="service-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20chef%20cooking%20delicious%20food%20in%20kitchen&image_size=landscape_4_3" alt="上门做饭">
+            </div>
+            <h2 class="service-title">专业厨师上门做饭</h2>
+            <p class="service-description">
+                星级厨师上门服务，根据您的口味需求，为您准备美味佳肴。使用新鲜食材，营养搭配合理，让您在家就能享受 restaurant 级别的美食。
+            </p>
+            <ul class="service-features">
+                <li>专业厨师，经验丰富</li>
+                <li>新鲜食材，健康卫生</li>
+                <li>个性化菜单，满足需求</li>
+                <li>餐后清理，服务周到</li>
+            </ul>
+            <div class="service-price">¥128/次起</div>
+        </div>
+        
+        <!-- 服务表单 -->
+        <div class="service-form-section">
+            <h2 class="section-title">服务详情</h2>
+            <form id="serviceForm">
+                <!-- 通用字段 -->
+                <div class="form-group">
+                    <label for="name">联系人姓名</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">联系电话</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">服务地址</label>
+                    <div id="addressSelector">
+                        <select id="addressSelect" name="address" required>
+                            <option value="">请选择地址</option>
+                            <!-- 地址选项将通过JavaScript动态生成 -->
+                        </select>
+                        <button type="button" class="add-address-link" onclick="goToAddAddress()" style="margin-top: 10px; padding: 8px 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">添加新地址</button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">服务日期</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">服务时间</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                </div>
+                
+                <!-- 上门做饭特有字段 -->
+                <div class="form-group">
+                    <label for="cookingType">烹饪类型</label>
+                    <select id="cookingType" name="cookingType">
+                        <option value="chinese">中餐</option>
+                        <option value="western">西餐</option>
+                        <option value="japanese">日料</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cookingDishes">菜品数量</label>
+                    <select id="cookingDishes" name="cookingDishes">
+                        <option value="2">2道菜</option>
+                        <option value="3">3道菜</option>
+                        <option value="4">4道菜</option>
+                        <option value="5">5道菜</option>
+                        <option value="more">5道以上</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cookingNotes">特殊要求</label>
+                    <input type="text" id="cookingNotes" name="cookingNotes" placeholder="例如：不要辣、有过敏食材等">
+                </div>
+                
+                <button type="submit" class="submit-button">提交订单</button>
+        </form>
+    </div>
+</div>
+
+<!-- 弹窗式提示容器 -->
+<div id="toastContainer"></div>
+    
+    <!-- 底部 tab 导航 -->
+    <div class="bottom-tab">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home tab-icon"></i>
+                    <span class="tab-text">首页</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='orders.html'">
+                    <i class="fas fa-clipboard-list tab-icon"></i>
+                    <span class="tab-text">订单</span>
+                </div>
+                <div class="swiper-slide" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user tab-icon"></i>
+                    <span class="tab-text">我的</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+    <script>
+        // 全局变量：当前显示的弹窗
+        let currentToast = null;
+
+        // 弹窗式提示函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // 先移除之前的弹窗
+            if (currentToast && toastContainer.contains(currentToast)) {
+                toastContainer.removeChild(currentToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            currentToast = toast;
+
+            toastContainer.appendChild(toast);
+
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // 只有非 loading 类型才会自动消失
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toastContainer.contains(toast)) {
+                            toastContainer.removeChild(toast);
+                            if (currentToast === toast) {
+                                currentToast = null;
+                            }
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        // 移除弹窗
+        function removeToast(toast) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toast && toastContainer.contains(toast)) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                        if (currentToast === toast) {
+                            currentToast = null;
+                        }
+                    }
+                }, 300);
+            }
+        }
+        
+        // 表单提交
+        document.getElementById('serviceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loadingToast = showToast('提交订单中...', 'loading', 0);
+            
+            // 收集表单数据
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('addressSelect').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                cookingType: document.getElementById('cookingType').value,
+                cookingDishes: document.getElementById('cookingDishes').value,
+                cookingNotes: document.getElementById('cookingNotes').value
+            };
+            
+            // 发送请求
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch('/api/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    service_type: 'cooking',
+                    details: formData,
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('订单提交成功', 'success');
+                    // 跳转到订单页面
+                    setTimeout(() => {
+                        window.location.href = 'orders.html';
+                    }, 1500);
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting order:', error);
+                showToast('订单提交失败，请检查网络连接', 'error');
+            })
+            .finally(() => {
+                removeToast(loadingToast);
+            });
+        });
+        
+        // 加载地址列表
+        function loadAddresses() {
+            const user_id = sessionStorage.getItem('user_id') || '';
+            fetch(`/api/addresses${user_id ? '?user_id=' + encodeURIComponent(user_id) : ''}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const addressSelect = document.getElementById('addressSelect');
+                        addressSelect.innerHTML = '<option value="">请选择地址</option>';
+                        
+                        let defaultAddressSelected = false;
+                        
+                        data.data.forEach(address => {
+                            const option = document.createElement('option');
+                            option.value = `${address.province}${address.city}${address.district}${address.address}`;
+                            option.textContent = `${address.name} ${address.phone} - ${address.province}${address.city}${address.district}${address.address}`;
+                            
+                            // 如果是默认地址，设置为选中状态
+                            if (address.is_default === '1') {
+                                option.selected = true;
+                                defaultAddressSelected = true;
+                            }
+                            
+                            addressSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading addresses:', error);
+                });
+        }
+        
+        // 跳转到添加地址页面
+        function goToAddAddress() {
+            // 保存当前页面的 URL，以便添加地址后返回
+            sessionStorage.setItem('returnTo', window.location.href);
+            window.location.href = 'addresses.html';
+        }
+        
+        // 页面加载时加载地址列表
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAddresses();
+        });
+    </script>
+</body>
+</html>
