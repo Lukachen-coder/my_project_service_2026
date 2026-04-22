@@ -1,2 +1,0 @@
-id,user_id,service_type,details,status,timestamp
-1,pet,"{""name"": ""lukachen"", ""phone"": ""123"", ""address"": ""北京市朝阳区某某路"", ""date"": ""2026-04-22"", ""time"": ""09:38"", ""petType"": ""dog"", ""petBreed"": ""金毛"", ""petFood"": ""皇家猫粮"", ""petNotes"": ""需要遛弯""}",pending,2026-04-21T01:38:09.172Z,
