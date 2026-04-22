@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录测试</title>
+</head>
+<body>
+    <h1>登录测试</h1>
+    <form id="loginForm">
+        <div>
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username" value="admin">
+        </div>
+        <div>
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" value="admin123">
+        </div>
+        <button type="submit">登录</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.textContent = '登录中...';
+            
+            fetch('http://localhost:8001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                console.log('登录响应:', data);
+            })
+            .catch(error => {
+                resultDiv.textContent = '错误: ' + error.message;
+                console.error('错误:', error);
+            });
+        });
+    </script>
+</body>
+</html>
