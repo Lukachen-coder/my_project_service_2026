@@ -15,8 +15,9 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-# 硬编码的路径 - 直接指定到项目根目录
-PROJECT_ROOT = 'D:/AI/project/shangmen'
+# 自动获取项目根目录（back-end目录的父目录）
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))  # back-end目录
+PROJECT_ROOT = os.path.dirname(PROJECT_ROOT)  # 项目根目录
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 FRONT_END_DIR = os.path.join(PROJECT_ROOT, 'front-end')
 
@@ -543,8 +544,9 @@ if __name__ == '__main__':
     print(f'数据目录: {DATA_DIR}')
 
     # 启动服务器
-    host = 'localhost'
-    port = 8001
+    host = '0.0.0.0'  # 固定为0.0.0.0，确保外部可以访问
+    # 优先读取系统环境变量PORT，默认值为8001
+    port = int(os.environ.get('PORT', 8001))
     server = HTTPServer((host, port), MyRequestHandler)
 
     # 打印启动信息
